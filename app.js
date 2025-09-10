@@ -17,7 +17,7 @@ let activities = [];
 
 // ---- Helpers: load/save all ----
 function loadAll() {
-  const parse = (k) => JSON.parse(localStorage.getItem(k) || '[]'); // null -> []
+  const parse = (k) => JSON.parse(localStorage.getItem(k) || '[]');
   return {
     farms: parse(STORAGE_KEYS.farms),
     applications: parse(STORAGE_KEYS.applications),
@@ -449,5 +449,5 @@ function renderRecords(){
     rows.sort((a,b)=>new Date(b.date)-new Date(a.date));
     tbody.innerHTML = rows.map(r=>`
       <tr>
-        <td>${r.type.toUpperCase()+r.type.slice(1)}</td><td>${r.name}</td><td>${r.qty||''}</td>
-        <td>${formatDate(r.date)}</td><td>${getFarmNameById(r.farmId)
+        <td>${r.type.charAt(0).toUpperCase()+r.type.slice(1)}</td><td>${r.name}</td><td>${r.qty||''}</td>
+        <td>${formatDate(r.date)}</td><td>$
