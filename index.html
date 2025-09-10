@@ -1,62 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farm Record Management System</title>
-  <!-- Explicit relative path for the CSS file -->
-  <link rel="stylesheet" href="./style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Records Management System</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Top Navigation -->
-    <nav class="navbar">
-      <div class="nav-brand">
-        <h2>🌱 Farm Records</h2>
-      </div>
-      <div class="nav-menu" id="navMenu">
-        <button class="nav-item active" data-section="dashboard">Dashboard</button>
-        <button class="nav-item" data-section="farms">Farms</button>
-        <button class="nav-item" data-section="applications">Applications</button>
-        <button class="nav-item" data-section="crops">Crops</button>
-        <button class="nav-item" data-section="records">Records</button>
-        <button class="nav-item" data-section="historical">Historical</button>
-      </div>
-      <div class="nav-actions">
-        <button id="resetDataBtn" class="danger-btn" title="Clear locally saved data">Reset Data</button>
-        <button class="nav-toggle" id="navToggle">☰</button>
-      </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="header-title">🌾 Farm Records</h1>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav" id="mainNav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><button class="nav-btn active" data-section="dashboard">📊 Dashboard</button></li>
+                <li><button class="nav-btn" data-section="farms">🏡 Farms</button></li>
+                <li><button class="nav-btn" data-section="applications">🧪 Applications</button></li>
+                <li><button class="nav-btn" data-section="crops">🌱 Crops</button></li>
+                <li><button class="nav-btn" data-section="records">📋 Records</button></li>
+                <li><button class="nav-btn" data-section="historical">📈 Historical</button></li>
+            </ul>
+        </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content">
-      <!-- Dashboard -->
-      <section id="dashboard" class="section active">
-        <div class="section-header">
-          <h1>Farm Dashboard</h1>
-          <p class="current-date" id="currentDate"></p>
+    <main class="main">
+        <div class="container">
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <h2>Dashboard</h2>
+                    <p class="welcome-message">Welcome to Farm Records Management - <span id="currentDate"></span></p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏡</div>
+                        <div class="stat-info">
+                            <h3 id="totalFarms">0</h3>
+                            <p>Total Farms</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧪</div>
+                        <div class="stat-info">
+                            <h3 id="totalApplications">0</h3>
+                            <p>Applications This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌱</div>
+                        <div class="stat-info">
+                            <h3 id="totalCrops">0</h3>
+                            <p>Active Crops</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="recent-activities">
+                        <h3>Recent Activities</h3>
+                        <div id="activitiesList" class="activities-list"></div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn--primary" data-action="add-farm">➕ Add Farm</button>
+                            <button class="btn btn--primary" data-action="add-application">🧪 Record Application</button>
+                            <button class="btn btn--primary" data-action="add-crop">🌱 Add Crop</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Farms Section -->
+            <section id="farms" class="section">
+                <div class="section-header">
+                    <h2>Farm Management</h2>
+                    <button class="btn btn--primary" id="addFarmBtn">➕ Add New Farm</button>
+                </div>
+
+                <div class="farms-content">
+                    <div id="farmsTable" class="table-container"></div>
+                </div>
+
+                <!-- Add Farm Modal -->
+                <div id="farmModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="farmModalTitle">Add New Farm</h3>
+                            <button class="modal-close" id="closeFarmModal">&times;</button>
+                        </div>
+                        <form id="farmForm" class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label">Farm Name</label>
+                                <input type="text" id="farmName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Farm ID</label>
+                                <input type="text" id="farmId" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Location</label>
+                                <input type="text" id="farmLocation" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Size (acres)</label>
+                                <input type="number" id="farmSize" class="form-control" min="0" step="0.1" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn--outline" id="cancelFarm">Cancel</button>
+                                <button type="submit" class="btn btn--primary">Save Farm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Applications Section -->
+            <section id="applications" class="section">
+                <div class="section-header">
+                    <h2>Fertilizer & Spray Applications</h2>
+                    <button class="btn btn--primary" id="addApplicationBtn">➕ Record Application</button>
+                </div>
+
+                <div class="applications-content">
+                    <div id="applicationsTable" class="table-container"></div>
+                </div>
+
+                <!-- Add Application Modal -->
+                <div id="applicationModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="applicationModalTitle">Record Application</h3>
+                            <button class="modal-close" id="closeApplicationModal">&times;</button>
+                        </div>
+                        <form id="applicationForm" class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label">Application Type</label>
+                                <select id="applicationType" class="form-control" required>
+                                    <option value="">Select type</option>
+                                    <option value="Fertilizer">Fertilizer</option>
+                                    <option value="Pesticide">Pesticide</option>
+                                    <option value="Herbicide">Herbicide</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Product Name</label>
+                                <input type="text" id="productName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" id="quantity" class="form-control" min="0" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Unit</label>
+                                <select id="unit" class="form-control" required>
+                                    <option value="">Select unit</option>
+                                    <option value="kg">Kilograms (kg)</option>
+                                    <option value="liters">Liters</option>
+                                    <option value="bags">Bags</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Farm</label>
+                                <select id="applicationFarm" class="form-control" required>
+                                    <option value="">Select farm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Application Method</label>
+                                <select id="method" class="form-control" required>
+                                    <option value="">Select method</option>
+                                    <option value="Spray">Spray</option>
+                                    <option value="Granular">Granular</option>
+                                    <option value="Irrigation">Irrigation</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="date" id="applicationDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea id="applicationNotes" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn--outline" id="cancelApplication">Cancel</button>
+                                <button type="submit" class="btn btn--primary">Save Application</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Crops Section -->
+            <section id="crops" class="section">
+                <div class="section-header">
+                    <h2>Crop Management</h2>
+                    <button class="btn btn--primary" id="addCropBtn">➕ Add Crop</button>
+                </div>
+
+                <div class="crops-content">
+                    <div id="cropsTable" class="table-container"></div>
+                </div>
+
+                <!-- Add Crop Modal -->
+                <div id="cropModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="cropModalTitle">Add Crop</h3>
+                            <button class="modal-close" id="closeCropModal">&times;</button>
+                        </div>
+                        <form id="cropForm" class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label">Crop Name</label>
+                                <input type="text" id="cropName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Variety</label>
+                                <input type="text" id="cropVariety" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Farm</label>
+                                <select id="cropFarm" class="form-control" required>
+                                    <option value="">Select farm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Plantation Date</label>
+                                <input type="date" id="plantationDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Expected Harvest Date</label>
+                                <input type="date" id="harvestDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Area (acres)</label>
+                                <input type="number" id="cropArea" class="form-control" min="0" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea id="cropNotes" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn--outline" id="cancelCrop">Cancel</button>
+                                <button type="submit" class="btn btn--primary">Save Crop</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Records Section -->
+            <section id="records" class="section">
+                <div class="section-header">
+                    <h2>All Records</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn--outline" id="exportPDF">📄 Export PDF</button>
+                        <button class="btn btn--outline" id="exportExcel">📊 Export Excel</button>
+                    </div>
+                </div>
+
+                <div class="records-filters">
+                    <div class="filter-group">
+                        <label class="form-label">Farm</label>
+                        <select id="recordsFarmFilter" class="form-control">
+                            <option value="">All Farms</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Record Type</label>
+                        <select id="recordsTypeFilter" class="form-control">
+                            <option value="">All Types</option>
+                            <option value="application">Applications</option>
+                            <option value="crop">Crops</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Date From</label>
+                        <input type="date" id="recordsDateFrom" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Date To</label>
+                        <input type="date" id="recordsDateTo" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Search</label>
+                        <input type="text" id="recordsSearch" class="form-control" placeholder="Search records...">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn--primary" id="applyFilters">Apply Filters</button>
+                        <button class="btn btn--outline" id="clearFilters">Clear</button>
+                    </div>
+                </div>
+
+                <div class="records-content">
+                    <div id="recordsTable" class="table-container"></div>
+                </div>
+            </section>
+
+            <!-- Historical Section -->
+            <section id="historical" class="section">
+                <div class="section-header">
+                    <h2>Historical Data</h2>
+                    <p>Compare current year vs previous year applications</p>
+                </div>
+
+                <div class="historical-content">
+                    <div class="historical-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-info">
+                                <h3 id="currentYearApps">0</h3>
+                                <p>Current Year Applications</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-info">
+                                <h3 id="lastYearApps">0</h3>
+                                <p>Last Year Applications</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-info">
+                                <h3 id="growthPercent">0%</h3>
+                                <p>Growth Rate</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="historicalTable" class="table-container"></div>
+                </div>
+            </section>
         </div>
-        <!-- Filled by JS (stats & activity) -->
-      </section>
-
-      <!-- Farms -->
-      <section id="farms" class="section"></section>
-
-      <!-- Applications -->
-      <section id="applications" class="section"></section>
-
-      <!-- Crops -->
-      <section id="crops" class="section"></section>
-
-      <!-- Records -->
-      <section id="records" class="section"></section>
-
-      <!-- Historical -->
-      <section id="historical" class="section"></section>
     </main>
-  </div>
 
-  <!-- Explicit relative path, defer so JS runs after parsing -->
-  <script src="./app.js" defer></script>
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3>Confirm Action</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--outline" id="cancelConfirm">Cancel</button>
+                <button type="button" class="btn btn--primary" id="confirmAction">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="toast hidden">
+        <span id="successMessage">Action completed successfully!</span>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
