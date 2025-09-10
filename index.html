@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+    <title>Crop-Focused Farm Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Mobile-First Navigation -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <h2>🌾 Crop Manager</h2>
+                </div>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+            <!-- Mobile Overlay Menu -->
+            <div class="nav-overlay" id="navOverlay"></div>
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-header">
+                    <h3>Navigation</h3>
+                    <button class="nav-close" id="navClose">✕</button>
+                </div>
+                <div class="nav-items">
+                    <button class="nav-item active" data-section="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </button>
+                    <button class="nav-item" data-section="farms">
+                        <span class="nav-icon">🏡</span>
+                        <span class="nav-text">Farms</span>
+                    </button>
+                    <button class="nav-item" data-section="crops">
+                        <span class="nav-icon">🌾</span>
+                        <span class="nav-text">My Crops</span>
+                    </button>
+                    <button class="nav-item" data-section="crop-profiles">
+                        <span class="nav-icon">🌱</span>
+                        <span class="nav-text">Crop Profiles</span>
+                    </button>
+                    <button class="nav-item" data-section="applications">
+                        <span class="nav-icon">💉</span>
+                        <span class="nav-text">Applications</span>
+                    </button>
+                    <button class="nav-item" data-section="recommendations">
+                        <span class="nav-icon">💡</span>
+                        <span class="nav-text">Recommendations</span>
+                    </button>
+                    <button class="nav-item" data-section="calendar">
+                        <span class="nav-icon">📅</span>
+                        <span class="nav-text">Crop Calendar</span>
+                    </button>
+                    <button class="nav-item" data-section="analytics">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Analytics</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>Crop Management Dashboard</h1>
+                        <p class="current-date" id="currentDate"></p>
+                    </div>
+                    <button class="btn btn--primary btn--mobile" onclick="exportAllDataToPDF()">
+                        📄 Export Complete Report PDF
+                    </button>
+                </div>
+
+                <!-- Quick Crop Overview -->
+                <div class="crop-overview">
+                    <h3>🌾 Active Crops Overview</h3>
+                    <div class="crop-cards" id="cropCards">
+                        <!-- Dynamic crop cards will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Today's Recommendations -->
+                <div class="today-recommendations card">
+                    <div class="card__body">
+                        <h3>💡 Today's Recommendations</h3>
+                        <div id="todayRecommendations" class="recommendations-list">
+                            <!-- Dynamic recommendations will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🌾</div>
+                        <div class="stat-info">
+                            <h3 id="totalCrops">0</h3>
+                            <p>Active Crops</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💉</div>
+                        <div class="stat-info">
+                            <h3 id="recentApplications">0</h3>
+                            <p>This Month Applications</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <h3 id="upcomingTasks">0</h3>
+                            <p>Upcoming Tasks</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <h3 id="totalVarieties">0</h3>
+                            <p>Crop Varieties</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Farms Section -->
+            <section id="farms" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>🏡 Farm Management</h1>
+                    </div>
+                    <button class="btn btn--primary btn--mobile" onclick="showAddFarmForm()">
+                        ➕ Add New Farm
+                    </button>
+                </div>
+
+                <div class="farm-form card mobile-card" id="farmForm" style="display: none;">
+                    <div class="card__body">
+                        <h3>➕ Add New Farm</h3>
+                        <form id="addFarmForm">
+                            <div class="form-group">
+                                <label class="form-label">Farm Name *</label>
+                                <input type="text" class="form-control" id="farmName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Farm ID *</label>
+                                <input type="text" class="form-control" id="farmId" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" id="farmLocation">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Total Area (acres)</label>
+                                <input type="number" class="form-control" id="farmSize" min="0" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Soil Type</label>
+                                <select class="form-control" id="soilType">
+                                    <option value="">Select Soil Type</option>
+                                    <option value="clay">Clay</option>
+                                    <option value="sandy">Sandy</option>
+                                    <option value="loamy">Loamy</option>
+                                    <option value="silt">Silt</option>
+                                    <option value="mixed">Mixed</option>
+                                </select>
+                            </div>
+                            <div class="form-actions mobile-actions">
+                                <button type="submit" class="btn btn--primary btn--mobile">➕ Add Farm</button>
+                                <button type="button" class="btn btn--outline btn--mobile" onclick="hideFarmForm()">❌ Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="farms-list">
+                    <div class="mobile-table-container">
+                        <table class="data-table mobile-table" id="farmsTable">
+                            <thead>
+                                <tr>
+                                    <th>Farm Details</th>
+                                    <th>Area</th>
+                                    <th>Crops</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="farmsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Crops Section -->
+            <section id="crops" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>🌾 My Crops</h1>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn--primary btn--mobile" onclick="showAddCropForm()">
+                            ➕ Add New Crop
+                        </button>
+                        <button class="btn btn--outline btn--mobile" onclick="exportCropReportToPDF()">
+                            📄 Export All Crops PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="crop-form card mobile-card" id="cropForm" style="display: none;">
+                    <div class="card__body">
+                        <h3>🌱 Add New Crop</h3>
+                        <form id="addCropForm">
+                            <div class="form-group">
+                                <label class="form-label">Crop Type *</label>
+                                <select class="form-control" id="cropType" required>
+                                    <option value="">Select Crop Type</option>
+                                    <option value="wheat">🌾 Wheat</option>
+                                    <option value="corn">🌽 Corn</option>
+                                    <option value="rice">🌾 Rice</option>
+                                    <option value="soybeans">🫘 Soybeans</option>
+                                    <option value="tomatoes">🍅 Tomatoes</option>
+                                    <option value="potatoes">🥔 Potatoes</option>
+                                    <option value="cotton">☁️ Cotton</option>
+                                    <option value="sugarcane">🎋 Sugarcane</option>
+                                    <option value="other">🌱 Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="customCropGroup" style="display: none;">
+                                <label class="form-label">Custom Crop Name *</label>
+                                <input type="text" class="form-control" id="customCropName">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Variety</label>
+                                <input type="text" class="form-control" id="cropVariety" placeholder="e.g. Hybrid variety, strain">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Farm *</label>
+                                <select class="form-control" id="cropFarm" required>
+                                    <option value="">Select Farm</option>
+                                </select>
+                            </div>
+                            <div class="form-row mobile-form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Plantation Date *</label>
+                                    <input type="date" class="form-control" id="plantationDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Expected Harvest</label>
+                                    <input type="date" class="form-control" id="harvestDate">
+                                </div>
+                            </div>
+                            <div class="form-row mobile-form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Area (acres) *</label>
+                                    <input type="number" class="form-control" id="cropArea" min="0" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Field/Block ID</label>
+                                    <input type="text" class="form-control" id="fieldId" placeholder="e.g. Block A, Field 1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" id="cropNotes" rows="3" placeholder="Crop details, goals, special considerations..."></textarea>
+                            </div>
+                            <div class="form-actions mobile-actions">
+                                <button type="submit" class="btn btn--primary btn--mobile">🌱 Add Crop</button>
+                                <button type="reset" class="btn btn--outline btn--mobile">🔄 Reset Form</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="crops-grid" id="cropsGrid">
+                    <!-- Dynamic crop cards will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Crop Profiles Section -->
+            <section id="crop-profiles" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>🌱 Crop Profiles</h1>
+                        <p>Detailed view of each crop with complete history</p>
+                    </div>
+                </div>
+
+                <div class="crop-profiles-list" id="cropProfilesList">
+                    <!-- Dynamic crop profiles with PDF export buttons will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Applications Section -->
+            <section id="applications" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>💉 Record Application</h1>
+                    </div>
+                </div>
+
+                <div class="application-form card mobile-card">
+                    <div class="card__body">
+                        <h3>📝 Record New Application</h3>
+                        <form id="addApplicationForm">
+                            <div class="form-group">
+                                <label class="form-label">Select Crop *</label>
+                                <select class="form-control" id="applicationCrop" required>
+                                    <option value="">Select Crop</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Application Type *</label>
+                                <select class="form-control" id="applicationType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="fertilizer">🌱 Fertilizer</option>
+                                    <option value="pesticide">🐛 Pesticide</option>
+                                    <option value="herbicide">🌿 Herbicide</option>
+                                    <option value="fungicide">🍄 Fungicide</option>
+                                    <option value="growth-regulator">📈 Growth Regulator</option>
+                                    <option value="micronutrient">⚗️ Micronutrient</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Product Name *</label>
+                                <input type="text" class="form-control" id="productName" required placeholder="e.g. NPK 10-10-10, Glyphosate">
+                            </div>
+                            <div class="form-row mobile-form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Quantity *</label>
+                                    <input type="number" class="form-control" id="quantity" min="0" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Unit</label>
+                                    <select class="form-control" id="unit">
+                                        <option value="kg">kg</option>
+                                        <option value="liters">liters</option>
+                                        <option value="bags">bags</option>
+                                        <option value="pounds">pounds</option>
+                                        <option value="gallons">gallons</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row mobile-form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Application Date *</label>
+                                    <input type="date" class="form-control" id="applicationDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Growth Stage</label>
+                                    <select class="form-control" id="growthStage">
+                                        <option value="">Select Stage</option>
+                                        <option value="seedling">🌱 Seedling</option>
+                                        <option value="vegetative">🌿 Vegetative</option>
+                                        <option value="flowering">🌸 Flowering</option>
+                                        <option value="fruiting">🍅 Fruiting</option>
+                                        <option value="maturity">🌾 Maturity</option>
+                                        <option value="pre-harvest">📅 Pre-harvest</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Application Method</label>
+                                <select class="form-control" id="applicationMethod">
+                                    <option value="spray">🚿 Spray</option>
+                                    <option value="granular">⚪ Granular</option>
+                                    <option value="liquid">💧 Liquid</option>
+                                    <option value="injection">💉 Injection</option>
+                                    <option value="broadcasting">📡 Broadcasting</option>
+                                    <option value="fertigation">💧 Fertigation</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Weather Conditions</label>
+                                <input type="text" class="form-control" id="weatherConditions" placeholder="e.g. Sunny, 25°C, Light wind">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Purpose/Reason</label>
+                                <textarea class="form-control" id="applicationPurpose" rows="2" placeholder="Why was this application needed?"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" id="applicationNotes" rows="3" placeholder="Additional observations, effectiveness, etc."></textarea>
+                            </div>
+                            <div class="form-actions mobile-actions">
+                                <button type="submit" class="btn btn--primary btn--mobile">📝 Record Application</button>
+                                <button type="reset" class="btn btn--outline btn--mobile">🔄 Reset Form</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="recent-applications">
+                    <div class="applications-timeline" id="applicationsTimeline">
+                        <!-- Dynamic applications timeline with PDF export will be inserted here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommendations Section -->
+            <section id="recommendations" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>💡 Smart Recommendations</h1>
+                        <p>Based on your historical data and crop growth stages</p>
+                    </div>
+                </div>
+
+                <div class="recommendation-filters card mobile-card">
+                    <div class="card__body">
+                        <h4>🎯 Filter Recommendations</h4>
+                        <div class="form-row mobile-form-row">
+                            <div class="form-group">
+                                <label class="form-label">Select Crop</label>
+                                <select class="form-control" id="recommendationCrop">
+                                    <option value="">All Crops</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Time Period</label>
+                                <select class="form-control" id="recommendationPeriod">
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="season">This Season</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary btn--mobile" onclick="loadRecommendations()">💡 Get Recommendations</button>
+                    </div>
+                </div>
+
+                <div class="recommendations-grid" id="recommendationsGrid">
+                    <!-- Dynamic recommendations will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Crop Calendar Section -->
+            <section id="calendar" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>📅 Crop Calendar</h1>
+                        <p>Visual timeline of all crop activities</p>
+                    </div>
+                </div>
+
+                <div class="calendar-controls card mobile-card">
+                    <div class="card__body">
+                        <h4>📊 Calendar View</h4>
+                        <div class="form-row mobile-form-row">
+                            <div class="form-group">
+                                <label class="form-label">Select Crop</label>
+                                <select class="form-control" id="calendarCrop">
+                                    <option value="">All Crops</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Year</label>
+                                <select class="form-control" id="calendarYear">
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary btn--mobile" onclick="loadCalendar()">📅 Load Calendar</button>
+                    </div>
+                </div>
+
+                <div class="calendar-view" id="calendarView">
+                    <!-- Dynamic calendar will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="section">
+                <div class="section-header">
+                    <div class="header-content">
+                        <h1>📈 Crop Analytics</h1>
+                        <p>Insights and trends from your crop data</p>
+                    </div>
+                </div>
+
+                <!-- Analytics Charts -->
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <h3>📊 Applications by Crop Type</h3>
+                        <div class="chart-container">
+                            <canvas id="applicationsByCropChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>📅 Monthly Application Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="monthlyTrendsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>🌱 Growth Stage Applications</h3>
+                        <div class="chart-container">
+                            <canvas id="growthStageChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>💰 Cost Analysis</h3>
+                        <div class="chart-container">
+                            <canvas id="costAnalysisChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crop Performance Summary -->
+                <div class="performance-summary card mobile-card">
+                    <div class="card__body">
+                        <h3>🏆 Crop Performance Summary</h3>
+                        <div id="performanceSummary">
+                            <!-- Dynamic performance data with PDF export will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Enhanced Modal for Crop Details -->
+        <div class="modal hidden" id="cropModal">
+            <div class="modal-content mobile-modal">
+                <div class="modal-header">
+                    <h3 id="cropModalTitle">🌱 Crop Details</h3>
+                    <button class="modal-close" onclick="closeCropModal()" aria-label="Close modal">✖️</button>
+                </div>
+                <div class="modal-body" id="cropModalBody">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Toast notifications -->
+        <div id="toast" class="toast mobile-toast hidden"></div>
+    </div>
+
+    <!-- Enhanced Script Loading -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
