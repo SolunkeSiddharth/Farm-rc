@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farm Record Management System</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <div class="nav-brand">
+        <h2>🌱 Farm Records</h2>
+      </div>
+      <div class="nav-menu" id="navMenu">
+        <button class="nav-item active" data-section="dashboard">Dashboard</button>
+        <button class="nav-item" data-section="farms">Farms</button>
+        <button class="nav-item" data-section="applications">Applications</button>
+        <button class="nav-item" data-section="crops">Crops</button>
+        <button class="nav-item" data-section="records">Records</button>
+        <button class="nav-item" data-section="historical">Historical</button>
+      </div>
+      <div class="nav-actions">
+        <button id="resetDataBtn" class="danger-btn" title="Clear locally saved data">Reset Data</button>
+        <button class="nav-toggle" id="navToggle">☰</button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard -->
+      <section id="dashboard" class="section active">
+        <div class="section-header">
+          <h1>Farm Dashboard</h1>
+          <p class="current-date" id="currentDate"></p>
+        </div>
+        <!-- Filled by JS (stats & activity) -->
+      </section>
+
+      <!-- Farms -->
+      <section id="farms" class="section"></section>
+
+      <!-- Applications -->
+      <section id="applications" class="section"></section>
+
+      <!-- Crops -->
+      <section id="crops" class="section"></section>
+
+      <!-- Records -->
+      <section id="records" class="section"></section>
+
+      <!-- Historical -->
+      <section id="historical" class="section"></section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
