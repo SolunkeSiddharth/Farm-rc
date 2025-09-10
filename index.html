@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Farm Record Management System</title>
-  <link rel="stylesheet" href="style.css"/>
+  <!-- Explicit relative path for the CSS file -->
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="app-container">
@@ -55,6 +56,7 @@
     </main>
   </div>
 
-  <script src="app.js"></script>
+  <!-- Explicit relative path, defer so JS runs after parsing -->
+  <script src="./app.js" defer></script>
 </body>
 </html>
