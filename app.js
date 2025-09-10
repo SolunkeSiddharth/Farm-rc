@@ -387,7 +387,6 @@ function renderCrops(){
 
   paint();
 }
-
 // ---- Records (combined view) ----
 function renderRecords(){
   const sec = $('#records');
@@ -450,4 +449,89 @@ function renderRecords(){
     tbody.innerHTML = rows.map(r=>`
       <tr>
         <td>${r.type.charAt(0).toUpperCase()+r.type.slice(1)}</td><td>${r.name}</td><td>${r.qty||''}</td>
-        <td>${formatDate(r.date)}</td><td>$
+        <td>${formatDate(r.date)}</td><td>${getFarmNameById(r.farmId)}</td><td>${r.mv||''}</td><td>${r.notes||''}</td>
+        <td>
+          <button class="action-btn edit-btn" data-id="${r.id}" data-src="${r.src}">✏️</button>
+          <button class="action-btn delete-btn" data-id="${r.id}" data-src="${r.src}">🗑️</button>
+        </td>
+      </tr>
+    `).join('') || `<tr><td colspan="8">No records found.</td></tr>`;
+    bindRowActions();
+  }
+  function bindRowActions(){
+    $all('.edit-btn', tbody).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = parseInt(btn.dataset.id,10); const src = btn.dataset.src;
+        if (src==='app'){
+          const a = applications.find(x=>x.id===id); if (!a) return;
+          const t = prompt('Type (Fertilizer/Pesticide/Herbicide):', a.type); if (t===null) return;
+          const p = prompt('Product Name:', a.productName); if (p===null) return;
+          const qStr = prompt('Quantity:', a.quantity); if (qStr===null) return; const qa = parseFloat(qStr);
+          const u = prompt('Unit (kg/liters/bags):', a.unit); if (u===null) return;
+          const d = prompt('Date (YYYY-MM-DD):', a.date); if (d===null) return;
+          const m = prompt('Method (Spray/Granular/Liquid):', a.method); if (m===null) return;
+          const n = prompt('Notes:', a.notes||''); if (n===null) return;
+          if (!t||!p||isNaN(qa)||!u||!d||!m) return alert('Invalid input.');
+          a.type=t; a.productName=p; a.quantity=qa; a.unit=u; a.date=d; a.method=m; a.notes=n;
+        } else {
+          const c = crops.find(x=>x.id===id); if (!c) return;
+          const name = prompt('Crop Name:', c.cropName); if (name===null) return;
+          const variety = prompt('Variety:', c.variety||''); if (variety===null) return;
+          const plant = prompt('Plantation Date (YYYY-MM-DD):', c.plantationDate); if (plant===null) return;
+          const harvest = prompt('Harvest Date (YYYY-MM-DD):', c.harvestDate); if (harvest===null) return;
+          const areaStr = prompt('Area (acres):', c.area??''); if (areaStr===null) return; const area = parseFloat(areaStr);
+          const notes = prompt('Notes:', c.notes||''); if (notes===null) return;
+          if (!name||!plant||!harvest) return alert('Required fields missing.');
+          if (new Date(plant) > new Date(harvest)) return alert('Plantation date cannot be after harvest date.');
+          c.cropName=name.trim(); c.variety=(variety||'').trim(); c.plantationDate=plant; c.harvestDate=harvest; if(!isNaN(area)) c.area=area; c.notes=(notes||'').trim();
+        }
+        saveAll(); paint();
+      });
+    });
+    $all('.delete-btn', tbody).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = parseInt(btn.dataset.id,10); const src = btn.dataset.src;
+        if (!confirm('Delete this record?')) return;
+        if (src==='app') applications = applications.filter(x=>x.id!==id);
+        else crops = crops.filter(x=>x.id!==id);
+        saveAll(); paint();
+      });
+    });
+  }
+
+  [fFilter, fromD, toD, tFilter, q].forEach(el=>el.addEventListener('input', paint));
+  $('#expPdf').addEventListener('click', ()=>alert('Exporting records as PDF...'));
+  $('#expXls').addEventListener('click', ()=>alert('Exporting records as Excel...'));
+  paint();
+}
+
+// ---- Historical ----
+function renderHistorical(){
+  const sec = $('#historical');
+  const year = new Date().getFullYear(); const last = year - 1;
+  const cur = applications.filter(a=>new Date(a.date).getFullYear()===year);
+  const prev = applications.filter(a=>new Date(a.date).getFullYear()===last);
+  const sumByType = (arr)=>arr.reduce((m,a)=>{ m[a.type]=(m[a.type]||0)+Number(a.quantity||0); return m; },{});
+  const cSum = sumByType(cur); const pSum = sumByType(prev);
+  const types = Array.from(new Set([...Object.keys(cSum), ...Object.keys(pSum)])).sort();
+
+  sec.innerHTML = `
+    <div class="section-header"><h1>Historical Comparison</h1></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>${last}</th><th>${year}</th></tr></thead>
+        <tbody>
+          ${types.map(t=>`<tr><td>${t}</td><td>${pSum[t]||0}</td><td>${cSum[t]||0}</td></tr>`).join('') || `<tr><td colspan="3">No data yet.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ---- Initial boot ----
+document.addEventListener('DOMContentLoaded', ()=>{
+  showSection('dashboard');
+  renderDashboard();
+  setToday();
+});
+
