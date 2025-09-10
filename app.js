@@ -1,4 +1,5 @@
 // Farm Record Management System with localStorage persistence
+console.log('app.js loaded');
 
 // ---- Storage Keys ----
 const STORAGE_KEYS = {
